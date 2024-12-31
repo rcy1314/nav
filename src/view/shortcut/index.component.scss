@@ -1,0 +1,133 @@
+@media (max-width: 1280px) {
+  .shortcut {
+    --padding: 100px;
+  }
+}
+
+@media (max-width: 968px) {
+  .shortcut {
+    --padding: 70px;
+  }
+}
+
+@media (max-width: 768px) {
+  .shortcut {
+    --padding: 0;
+    --iconWidth: 45px;
+    --dockHeight: 61px;
+    .datetime {
+      font-size: 40px !important;
+    }
+    .title {
+      font-size: 22px !important;
+    }
+    .days {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.shortcut {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.02);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  user-select: none;
+  transition: all 0.1s linear;
+  &.hasComponent {
+    padding-top: 80px;
+  }
+  .box2 {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .flex1 {
+    flex: 1;
+    padding: 0 var(--padding, 200px);
+    margin-bottom: 20px;
+    overflow: hidden;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  .dock {
+    padding-bottom: 10px;
+    .dock-box {
+      background-color: rgba(255, 255, 255, 0.4);
+      border-radius: 16px;
+      height: var(--dockHeight, 66px);
+      padding: 0 8px;
+      padding-bottom: 8px;
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 12px 0px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 16px;
+      max-width: 100%;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    .dock-item {
+      cursor: pointer;
+    }
+    ::ng-deep {
+      .icon {
+        background-color: transparent;
+      }
+      .common-icon {
+        width: var(--iconWidth, 50px);
+        height: var(--iconWidth, 50px);
+      }
+    }
+  }
+
+  .title {
+    font-size: 30px;
+    font-weight: bold;
+  }
+
+  ::ng-deep {
+    .name {
+      color: #fff !important;
+    }
+    .web-list {
+      gap: 40px;
+    }
+  }
+  .datetime {
+    font-size: 60px;
+    color: #fff;
+    line-height: 1;
+    font-family: text;
+    font-weight: bold;
+  }
+  .days {
+    font-size: 20px;
+    font-weight: bold;
+    color: rgba(249, 250, 251, 0.85);
+    margin-bottom: 15px;
+    margin-top: 5px;
+    font-family: text;
+  }
+  .margin {
+    margin: 0 10px;
+  }
+}
+
+.tianqi {
+  position: fixed;
+  top: 0;
+  right: 100px;
+}

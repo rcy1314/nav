@@ -1,0 +1,78 @@
+<div
+  class="shortcut dark-bg-gary2"
+  [class.hasComponent]="settings.shortcutThemeShowWeather"
+  [ngStyle]="{ 'background-image': 'url(' + shortcutThemeImage + ')' }"
+>
+  <div class="box2">
+    <h1
+      class="title dark-white"
+      [class.text-black]="!shortcutThemeImage"
+      [ngStyle]="{ color: shortcutThemeImage ? '#fff' : '' }"
+    >
+      {{ settings.shortcutTitle || settings.title }}
+    </h1>
+
+    <div class="datetime">{{ hours }}:{{ minutes }}:{{ seconds }}</div>
+    <div class="days">
+      <span
+        >{{ month }}{{ $t('_shortMonth') }}{{ date }}{{ $t('_shortDay') }}</span
+      >
+      <span class="margin">{{ dayText }}</span>
+    </div>
+
+    <app-search-engine size="large" />
+
+    <div class="flex1">
+      <app-web-list
+        size="large"
+        type="dock"
+        [dockCount]="settings.shortcutDockCount"
+      />
+    </div>
+
+    <div class="dock" *ngIf="dockList.length">
+      <span
+        class="dock-box"
+        (mouseover)="handleMouseOver($event)"
+        (mouseleave)="handleMouseLeave($event)"
+      >
+        <div
+          *ngFor="
+            let item of dockList;
+            let idx = index;
+            trackBy: trackByItemWeb
+          "
+          nz-tooltip
+          [nzTooltipTitle]="item['__name__'] || item['name']"
+          class="dock-item"
+          [attr.data-index]="idx"
+          (click)="jumpService.goUrl($event, item['url'])"
+        >
+          <app-logo
+            style="display: block"
+            [attr.data-index]="idx"
+            [src]="item['icon'] || ''"
+            [name]="item['name']"
+            [size]="0"
+            [radius]="10"
+          />
+        </div>
+      </span>
+    </div>
+  </div>
+</div>
+
+<app-fixbar [showCollapse]="false" [showTop]="false" />
+
+<iframe
+  *ngIf="settings.shortcutThemeShowWeather"
+  [hidden]="!frameLoad"
+  (load)="iframeLoad()"
+  class="tianqi"
+  allowtransparency="true"
+  frameborder="0"
+  width="290"
+  height="96"
+  scrolling="no"
+  src="//tianqi.2345.com/plugin/widget/index.htm?s=1&z=1&t=0&v=0&d=2&bd=0&k=&f=ffffff&ltf=009944&htf=cc0000&q=1&e=1&a=1&c=54511&w=290&h=96&align=center"
+></iframe>

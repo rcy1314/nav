@@ -1,0 +1,74 @@
+<nz-spin nzTip="Loading..." [nzSpinning]="submitting">
+  <div *ngIf="isPermission">
+    <button
+      *ngIf="!isSelfDevelop"
+      class="mt-2.5 mr-2.5"
+      nz-button
+      nzType="primary"
+      (click)="handleSubmit()"
+      [nzLoading]="submitting"
+    >
+      {{ $t('_save') }}
+    </button>
+
+    <button nz-button (click)="getUserCollect()" [nzLoading]="submitting">
+      {{ $t('_refresh') }}
+    </button>
+
+    <div class="mb-2.5 mt-2.5 color-red font-bold" *ngIf="!isSelfDevelop">
+      处理完成所有数据后需要点击一次保存方可生效
+    </div>
+    <nz-table #basicTable [nzData]="dataList" [nzShowPagination]="false">
+      <thead>
+        <tr>
+          <th nzWidth="80px">{{ $t('_action') }}</th>
+          <th nzWidth="80px">{{ $t('_icon') }}</th>
+          <th nzWidth="100px">{{ $t('_webName') }}</th>
+          <th nzWidth="100px">{{ $t('_associatedLabels') }}</th>
+          <th nzWidth="300px">{{ $t('_webDesc') }}</th>
+          <th nzWidth="300px">{{ $t('_webTag') }}</th>
+          <th>{{ $t('_createAt') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of dataList; index as idx; trackBy: trackByItem">
+          <td>
+            <div>
+              <a (click)="handleConfirmGet(data, idx)">{{ $t('_collect') }}</a>
+            </div>
+            <div class="mt-2.5">
+              <a
+                nz-popconfirm
+                nzPopconfirmPlacement="rightTop"
+                nzOkType="danger"
+                [nzPopconfirmTitle]="$t('_confirmDel')"
+                nzPopconfirmPlacement="bottom"
+                (nzOnConfirm)="handleDelete(idx)"
+                class="color-red"
+              >
+                {{ $t('_del') }}
+              </a>
+            </div>
+          </td>
+          <td>
+            <app-logo [src]="data.icon" [name]="data.name" />
+          </td>
+          <td>
+            <a [href]="data.url" target="_blank">{{ data.name }}</a>
+          </td>
+          <td>
+            <tag-list [data]="data.tags" *ngIf="data.tags" />
+          </td>
+          <td>
+            <pre class="desc">{{ data.desc }}</pre>
+          </td>
+          <td nzWidth="300px" *ngIf="data.extra">
+            {{ data.extra.oneName }} / {{ data.extra.twoName }} /
+            {{ data.extra.threeName }}
+          </td>
+          <td>{{ data.createdAt }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-spin>

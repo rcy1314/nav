@@ -1,7 +1,7 @@
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
-
-import { getCDN } from '../services'
+import navConfig from '../../nav.config.json'
 
 export const DB_PATH = 'data/db.json'
 
@@ -11,19 +11,20 @@ export const SETTING_PATH = 'data/settings.json'
 
 export const SEARCH_PATH = 'data/search.json'
 
-export const LOGO_PATH = 'logo.png'
+export const COMPONENT_PATH = 'data/component.json'
 
-export const LOGO_CDN = getCDN('logo.png')
-
-export const VERSION = '7.0.0'
+export const VERSION = navConfig.version
 
 export const STORAGE_KEY_MAP = {
   token: 'token',
   location: 'location',
   s_url: 's_url',
   isDark: 'isDark',
-  website: 'website',
+  website: 'WEBSITE_DB',
   engine: 'engine',
   language: 'language',
-  total: 'total'
+  total: 'total',
+  authCode: 'AUTH_CODE',
+  sideCollapsed: 'SIDE_COLLAPSED',
+  fixbarOpen: 'FIXBAR_OPEN',
 }

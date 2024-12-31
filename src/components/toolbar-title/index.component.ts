@@ -1,50 +1,44 @@
-// @ts-nocheck
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { INavThreeProp, INavProps, INavFourProp } from '../../types'
-import { NzMessageService } from 'ng-zorro-antd/message'
-import { queryString, setWebsiteList } from '../../utils'
-import { getToken } from '../../utils/user'
-import { websiteList } from '../../store'
-import { $t } from 'src/locale'
+import { CommonModule } from '@angular/common'
+import { INavThreeProp, INavProps } from 'src/types'
+import { isLogin } from 'src/utils/user'
+import { websiteList, settings } from 'src/store'
+import { NzIconModule } from 'ng-zorro-antd/icon'
+import event from 'src/utils/mitt'
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, NzIconModule],
   selector: 'app-toolbar-title',
   templateUrl: './index.component.html',
-  styleUrls: ['./index.component.scss']
+  styleUrls: ['./index.component.scss'],
 })
 export class ToolbarTitleWebComponent implements OnInit {
   @Input() index: number = 0
-  @Input() dataSource: INavThreeProp
-  @Input() arrowType: '1'|'2' = '1'
+  @Input() dataSource!: INavThreeProp
   @Output() onCollapse = new EventEmitter()
 
-  isLogin = !!getToken()
-  showCreateModal = false
+  isLogin = isLogin
   websiteList: INavProps[] = websiteList
+  settings = settings
 
-  constructor(
-    private message: NzMessageService,
-  ) {}
+  constructor() {}
 
   ngOnInit() {}
 
-  toggleCreateModal() {
-    this.showCreateModal = !this.showCreateModal
+  openCreateWebModal() {
+    event.emit('CREATE_WEB', {
+      threeIndex: this.index,
+    })
   }
 
-  handleAdd(payload: INavFourProp) {
-    const { page, id } = queryString()
-    const w = this.websiteList[page].nav[id].nav[this.index].nav
-    const exists = w.some(item => item.name === payload.name)
-    if (exists) {
-      return this.message.error($t('_repeatAdd'))
-    }
-    w.unshift(payload)
-    this.message.success($t('_addSuccess'))
-    setWebsiteList(this.websiteList)
-    this.toggleCreateModal()
+  handleEditName(e: Event, data: INavThreeProp) {
+    e.stopPropagation()
+    e.preventDefault()
+    event.emit('EDIT_CATEGORY_OPEN', { ...data, index: this.index })
   }
 }

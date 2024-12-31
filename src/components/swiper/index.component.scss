@@ -1,0 +1,14 @@
+.swiper {
+  user-select: none;
+  ::ng-deep {
+    .slick-slide,
+    .slick-track,
+    .slick-list {
+      height: auto !important;
+    }
+  }
+  .bgimg {
+    width: 100%;
+    object-fit: cover;
+  }
+}

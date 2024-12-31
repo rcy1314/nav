@@ -1,0 +1,168 @@
+<nz-layout class="layout">
+  <nz-spin
+    nzSimple
+    *ngIf="commonService.sliceMax === 0"
+    class="position-center"
+  />
+  <nz-layout>
+    <nz-sider
+      class="sider-compnent"
+      nzCollapsible
+      [(nzCollapsed)]="isCollapsed"
+      [nzTrigger]="null"
+    >
+      <div class="logo dark-bg" (click)="handleCollapsed()">
+        <img [src]="commonService.settings.favicon" class="logo-img" />
+        <span class="web-title" *ngIf="!isCollapsed">{{
+          commonService.settings.sideTitle || commonService.title
+        }}</span>
+      </div>
+
+      <ul nz-menu nzMode="inline" class="sider dark-scrollbar dark-bg">
+        <li
+          nz-submenu
+          *ngFor="
+            let item of commonService.websiteList;
+            index as pageIdx;
+            trackBy: commonService.trackByItem
+          "
+          (nzOpenChange)="openMenu(item, pageIdx)"
+          [nzTitle]="titleTpl"
+          [nzOpen]="item['collapsed']"
+        >
+          <ng-template #titleTpl>
+            <img *ngIf="item.icon" class="sideicon" [src]="item.icon" />
+            <span class="menu-title ellipsis">{{
+              isCollapsed && item.icon
+                ? ''
+                : isCollapsed && !item.icon
+                ? item.title.slice(0, 4)
+                : item.title
+            }}</span>
+          </ng-template>
+
+          <ul>
+            <li
+              nz-menu-item
+              *ngFor="
+                let el of item.nav;
+                let idIdx = index;
+                trackBy: commonService.trackByItem
+              "
+              [nzSelected]="
+                commonService.page === pageIdx && commonService.id === idIdx
+              "
+              (click)="commonService.handleSidebarNav(idIdx, pageIdx)"
+            >
+              <img *ngIf="el.icon" class="sideicon fixicon" [src]="el.icon" />
+              <span class="ellipsis">{{ el.title }}</span>
+
+              <div
+                *ngIf="
+                  commonService.page === pageIdx && commonService.id === idIdx
+                "
+                (click)="commonService.onCollapseAll($event)"
+                class="collapse-wrapper"
+              >
+                <i
+                  class="iconfont iconweibiaoti25 collapseIcon"
+                  [class.active]="commonService.collapsed"
+                >
+                </i>
+              </div>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nz-sider>
+
+    <nz-layout class="inner-layout">
+      <div
+        class="search-header"
+        *ngIf="commonService.settings.sideThemeImages.length > 0"
+      >
+        <app-swiper
+          [images]="commonService.settings.sideThemeImages"
+          [autoplay]="commonService.settings.sideThemeAutoplay"
+          [height]="commonService.settings.sideThemeHeight"
+        />
+      </div>
+
+      <component-group></component-group>
+
+      <app-search-engine class="mobile-search" />
+
+      <nz-content class="content" id="content">
+        <app-web-list [search]="false" [overflow]="true" />
+
+        <div class="box">
+          <div *ngIf="commonService.currentList.length > 0; else noData">
+            <div
+              *ngFor="
+                let item of commonService.currentList.slice(
+                  0,
+                  commonService.sliceMax
+                );
+                let i = index;
+                trackBy: commonService.trackByItem
+              "
+            >
+              <div class="nav-wrapper">
+                <app-toolbar-title
+                  [dataSource]="item"
+                  (onCollapse)="commonService.onCollapse(item, i)"
+                  [index]="i"
+                />
+
+                <div
+                  nz-row
+                  [nzGutter]="[16, 16]"
+                  [style.display]="item.collapsed ? 'none' : ''"
+                >
+                  <div
+                    *ngFor="
+                      let el of item.nav;
+                      index as j;
+                      trackBy: commonService.trackByItemWeb
+                    "
+                    class="gutter-row"
+                    nz-col
+                    [nzSpan]="6"
+                    [nzXs]="24"
+                    [nzSm]="12"
+                    [nzMd]="12"
+                    [nzLg]="8"
+                    [nzXl]="6"
+                    [nzXXl]="nzXXl"
+                  >
+                    <app-card
+                      [cardStyle]="commonService.settings.sideCardStyle"
+                      [dataSource]="el"
+                      [indexs]="[commonService.page, commonService.id, i, j]"
+                      [searchKeyword]="commonService.searchKeyword"
+                      class="column-border"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <ng-template #noData>
+            <app-no-data />
+          </ng-template>
+        </div>
+      </nz-content>
+
+      <app-footer
+        className="side-footer"
+        [content]="commonService.settings.sideFooterHTML"
+      />
+    </nz-layout>
+  </nz-layout>
+</nz-layout>
+
+<app-fixbar
+  (onCollapse)="commonService.onCollapseAll($event)"
+  [collapsed]="commonService.collapsed"
+/>

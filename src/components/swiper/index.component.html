@@ -1,0 +1,27 @@
+<div
+  class="swiper"
+  [ngStyle]="{ height: height <= 0 ? '' : height + 'px' }"
+  *ngIf="images.length > 0"
+>
+  <nz-carousel
+    [nzAutoPlay]="autoplay"
+    [nzAutoPlaySpeed]="5000"
+    [nzDots]="images.length > 1"
+  >
+    <div
+      nz-carousel-content
+      [class.cursor-pointer]="item['url']"
+      *ngFor="let item of images; let i = index"
+      (click)="jumpService.goUrl($event, item['url'])"
+    >
+      <img
+        class="bgimg"
+        [src]="item.src"
+        draggable="false"
+        [ngStyle]="{ height: height <= 0 ? '' : height + 'px' }"
+      />
+    </div>
+  </nz-carousel>
+
+  <ng-content></ng-content>
+</div>

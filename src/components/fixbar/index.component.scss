@@ -1,26 +1,35 @@
 .fixbar {
   z-index: 9;
   position: fixed;
-  bottom: 30px;
+  bottom: 60px;
   right: 15px;
   user-select: none;
+  &.openFixbar {
+    .common-show {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+  }
 
   .wrapper {
     width: 40px;
     height: 40px;
     margin-top: 10px;
-    transition: .1s linear;
+    transition: 0.1s linear;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     border-radius: 50%;
     background-color: #fff;
-    box-shadow: 0 0 5px rgba(0, 0, 0, .05);
-
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     &:hover {
-      box-shadow: 0 0 5px rgba(0, 0, 0, .15);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.15);
       transform: scale(1.2);
+    }
+    &.common-show {
+      visibility: hidden;
+      opacity: 0;
     }
   }
 
@@ -30,7 +39,7 @@
   }
 
   i {
-    transition: .1s linear;
+    transition: 0.1s linear;
     display: inline-block;
     font-size: 20px;
     color: #999;
@@ -42,9 +51,8 @@
     font-weight: bold;
   }
 
-  .collapse {
+  .collapse-icon {
     transform: rotate(-270deg);
-
     &.active {
       transform: rotate(-360deg);
     }

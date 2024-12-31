@@ -1,13 +1,15 @@
-// @ts-nocheck
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xie.jiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { INavProps } from '../types'
 import { websiteList } from '../store'
 import { $t } from '../locale'
 
+let id = -Date.now()
+
 function getCreatedAt(node?: Element): string {
-  const now = new Date().toISOString()
+  const now = new Date().toString()
   if (!node) {
     return now
   }
@@ -18,11 +20,11 @@ function getCreatedAt(node?: Element): string {
     return now
   }
 
-  return new Date(Number(addDate) * 1000).toISOString()
+  return new Date(Number(addDate) * 1000).toString()
 }
 
 function getTitle(node: Element) {
-  return node.textContent
+  return node.textContent || ''
 }
 
 function getUrl(node: Element) {
@@ -30,12 +32,12 @@ function getUrl(node: Element) {
 }
 
 function getIcon(node: Element) {
-  return node.getAttribute('icon') || null
+  return node.getAttribute('icon') || ''
 }
 
 const nowCratedAt = getCreatedAt()
 
-function findAllNoCate(roolDL: Element) {
+function findUnclassifiedData(roolDL: Element) {
   const data = []
   for (let i = 0; i < roolDL.childElementCount; i++) {
     const iItem = roolDL.childNodes[i] as any
@@ -53,9 +55,11 @@ function findAllNoCate(roolDL: Element) {
         createdAt,
         icon,
         url,
-        urls: {},
+        tags: [],
         desc: '',
-        rate: 5
+        rate: 5,
+        id: (id += 1),
+        breadcrumb: [],
       })
     }
   }
@@ -68,6 +72,12 @@ export function parseBookmark(htmlStr: string) {
   const importEl = document.createElement('div')
   importEl.innerHTML = htmlStr
   const roolDL = importEl.querySelector('dl dl')
+
+  if (!roolDL) {
+    return {
+      message: '未找到dl dl节点',
+    }
+  }
 
   let ii = 0
   let jj = 0
@@ -87,25 +97,25 @@ export function parseBookmark(htmlStr: string) {
         data.push({
           title,
           createdAt,
-          icon: null,
-          nav: []
+          icon: '',
+          nav: [],
         })
 
         // Two Level
         jj = 0
         const DL = iItem.querySelector('dl')
-        const allNoCateData = findAllNoCate(DL)
-        if (allNoCateData.length > 0) {
+        const unclassifiedData = findUnclassifiedData(DL)
+        if (unclassifiedData.length > 0) {
           jj++
           data[ii - 1].nav.push({
             createdAt: nowCratedAt,
-            title: $t('_uncategorized'),
+            title,
             nav: [
               {
-                title: $t('_uncategorized'),
-                nav: allNoCateData
-              }
-            ]
+                title,
+                nav: unclassifiedData,
+              },
+            ],
           })
         }
 
@@ -120,20 +130,20 @@ export function parseBookmark(htmlStr: string) {
             data[ii - 1].nav.push({
               title,
               createdAt,
-              icon: null,
-              nav: []
+              icon: '',
+              nav: [],
             })
 
             // Three Level
             kk = 0
             const DL3 = jItem.querySelector('dl')
-            const allNoCateData = findAllNoCate(DL3)
-            if (allNoCateData.length > 0) {
+            const unclassifiedData = findUnclassifiedData(DL3)
+            if (unclassifiedData.length > 0) {
               kk++
               data[ii - 1].nav[jj - 1].nav.push({
                 createdAt: nowCratedAt,
-                title: $t('_uncategorized'),
-                nav: allNoCateData
+                title,
+                nav: unclassifiedData,
               })
             }
             for (let k = 0; k < DL3.childElementCount; k++) {
@@ -148,7 +158,7 @@ export function parseBookmark(htmlStr: string) {
                   title,
                   createdAt,
                   nav: [],
-                  icon: null
+                  icon: '',
                 })
 
                 // Website Level
@@ -167,10 +177,12 @@ export function parseBookmark(htmlStr: string) {
                       createdAt,
                       url,
                       desc: '',
-                      urls: {},
+                      tags: [],
                       rate: 5,
                       top: false,
-                      icon
+                      icon,
+                      id: (id += 1),
+                      breadcrumb: [],
                     })
                   }
                 }
@@ -181,8 +193,8 @@ export function parseBookmark(htmlStr: string) {
       }
     }
 
-    const allNoCateData = findAllNoCate(roolDL)
-    if (allNoCateData.length > 0) {
+    const unclassifiedData = findUnclassifiedData(roolDL)
+    if (unclassifiedData.length > 0) {
       data.push({
         title: $t('_uncategorized'),
         createdAt: nowCratedAt,
@@ -193,24 +205,24 @@ export function parseBookmark(htmlStr: string) {
             nav: [
               {
                 title: $t('_uncategorized'),
-                nav: allNoCateData
-              }
-            ]
-          }
-        ]
+                nav: unclassifiedData,
+              },
+            ],
+          },
+        ],
       })
     }
   } catch (error) {
     console.log(error)
-    return error
+    throw error
   }
 
   // 增量导入
   function r(data: any[], list: any[]) {
     for (let i = 0; i < data.length; i++) {
       const item = data[i] as any
-      const title = item.title || item.name
-      const idx = list.findIndex(item => (item.title || item.name) === title)
+      const title = item.title || item.url
+      const idx = list.findIndex((item) => (item.title || item.url) === title)
 
       // Repeat
       if (idx !== -1) {
