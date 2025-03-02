@@ -1,0 +1,21 @@
+.tagbox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tag-item {
+  padding: 0 6px;
+  border-radius: 2px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  transition: all 0.1s linear;
+  color: #fff;
+  min-height: 15px;
+  &:hover {
+    opacity: 0.8;
+  }
+}
+.tag-action {
+  display: none;
+}

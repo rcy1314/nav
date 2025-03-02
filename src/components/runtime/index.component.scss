@@ -1,0 +1,47 @@
+.runtime {
+  pointer-events: none;
+  position: relative;
+  width: 230px;
+  height: var(--componentHeight);
+  max-height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  padding: 30px 30px;
+  flex-direction: column;
+  background: linear-gradient(135deg, #8bc6ec 0%, #9599e2 100%);
+  font-weight: bold;
+
+  .title {
+    z-index: 2;
+    position: relative;
+    font-size: 18px;
+    color: #f9f6f6;
+  }
+  .days {
+    z-index: 2;
+    position: relative;
+    margin-top: 10px;
+    font-size: 48px;
+    line-height: 1;
+    color: #d67272;
+  }
+  .day {
+    vertical-align: text-bottom;
+  }
+  .unit {
+    font-size: 15px;
+    margin-left: 2px;
+    margin-bottom: 2px;
+    font-weight: 500;
+  }
+  .img {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    width: 70px;
+  }
+}

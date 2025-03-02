@@ -16,48 +16,53 @@
   {{ $t('_save') }}
 </button>
 
+<div class="mb-4 color-red font-bold" *ngIf="!isSelfDevelop">
+  {{ $t('_buildTip') }}
+</div>
 
 <nz-table #basicTable [nzData]="tagList">
   <thead>
     <tr>
       <th>{{ $t('_tagName') }}</th>
       <th>{{ $t('_color') }}</th>
-      <th>{{ $t('_createAt') }}</th>
       <th>{{ $t('_remark') }}</th>
       <th>{{ $t('_action') }}</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let data of tagList; index as idx">
+    <tr *ngFor="let data of tagList; index as idx; trackBy: trackByItem">
       <td width="150px">
-        <div *ngIf="data.isInner">{{ data.name }}</div>
-        <input *ngIf="!data.isInner" nz-input [(ngModel)]="data.name" maxlength="10" />
+        <input nz-input [(ngModel)]="data.name" maxlength="10" />
       </td>
       <td width="160px">
         <input
           type="color"
           [value]="data.color"
           (change)="onColorChange($event, idx)"
-        /> - {{ data.color }}
+        />
+        - {{ data.color }}
       </td>
-      <td width="220px">{{ data.createdAt }}</td>
       <td width="200px">
         <div *ngIf="data.isInner">{{ data.desc }}</div>
-        <input *ngIf="!data.isInner" nz-input [(ngModel)]="data.desc" maxlength="20" />
+        <input
+          *ngIf="!data.isInner"
+          nz-input
+          [(ngModel)]="data.desc"
+          maxlength="20"
+        />
       </td>
       <td>
-        <div *ngIf="!data.isInner">
-          <a
-            nz-popconfirm
-            nzPopconfirmPlacement="rightTop"
-            nzOkType="danger"
-            [nzPopconfirmTitle]="$t('_confirmDel')"
-            nzPopconfirmPlacement="bottom"
-            (nzOnConfirm)="handleDelete(idx)"
-          >
-            <a>{{ $t('_del') }}</a>
-          </a>
-        </div>
+        <a
+          *ngIf="!data.isInner"
+          nz-popconfirm
+          nzOkType="danger"
+          [nzPopconfirmTitle]="$t('_confirmDel')"
+          nzPopconfirmPlacement="bottom"
+          (nzOnConfirm)="handleDelete(idx)"
+          class="color-red"
+        >
+          {{ $t('_del') }}
+        </a>
       </td>
     </tr>
   </tbody>

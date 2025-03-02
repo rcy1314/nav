@@ -1,30 +1,36 @@
-// @ts-nocheck
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
-import { Component, Output, EventEmitter, Input, ChangeDetectionStrategy } from '@angular/core'
-import { isDark as isDarkFn, randomBgImg, queryString } from '../../utils'
+import { Component, Output, EventEmitter, Input } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { isDark as isDarkFn, randomBgImg, queryString } from 'src/utils'
 import { NzModalService } from 'ng-zorro-antd/modal'
 import { NzMessageService } from 'ng-zorro-antd/message'
-import { NzNotificationService } from 'ng-zorro-antd/notification'
-import { getToken } from '../../utils/user'
-import { updateFileContent } from '../../services'
-import { websiteList, settings } from '../../store'
-import { DB_PATH, STORAGE_KEY_MAP } from '../../constants'
+import { isLogin } from 'src/utils/user'
+import { updateFileContent } from 'src/api'
+import { websiteList, settings } from 'src/store'
+import { DB_PATH, STORAGE_KEY_MAP } from 'src/constants'
 import { Router, ActivatedRoute } from '@angular/router'
 import { $t, getLocale } from 'src/locale'
+import { addDark, removeDark } from 'src/utils/util'
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown'
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
 import mitt from 'src/utils/mitt'
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, NzDropDownModule, NzToolTipModule],
   selector: 'app-fixbar',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [NzModalService, NzMessageService],
 })
 export class FixbarComponent {
+  @Input() showTop: boolean = true
   @Input() showCollapse: boolean = true
-  @Input() collapsed: boolean
-  @Input() selector: string
+  @Input() collapsed: boolean = false
+  @Input() selector: string = ''
   @Output() onCollapse = new EventEmitter()
 
   $t = $t
@@ -33,52 +39,84 @@ export class FixbarComponent {
   websiteList = websiteList
   isDark: boolean = isDarkFn()
   syncLoading = false
-  isLogin = !!getToken()
+  isLogin = isLogin
+  isShowFace = true
+  open = localStorage.getItem(STORAGE_KEY_MAP.fixbarOpen) === 'true'
   themeList = [
     {
+      name: $t('_switchTo') + ' Super',
+      url: '/super',
+    },
+    {
       name: $t('_switchTo') + ' Light',
-      url: '/light'
+      url: '/light',
     },
     {
       name: $t('_switchTo') + ' Sim',
-      url: '/sim'
+      url: '/sim',
     },
     {
       name: $t('_switchTo') + ' Side',
-      url: '/side'
+      url: '/side',
     },
     {
       name: $t('_switchTo') + ' Shortcut',
-      url: '/shortcut'
+      url: '/shortcut',
     },
     {
       name: $t('_switchTo') + ' App',
-      url: '/app'
-    }
+      url: '/app',
+    },
   ]
 
   constructor(
     private message: NzMessageService,
-    private notification: NzNotificationService,
     private modal: NzModalService,
     private router: Router,
     private activatedRoute: ActivatedRoute
-  ) {}
-
-  ngOnInit() {
+  ) {
     if (this.isDark) {
-      document.documentElement.classList.add('dark-container')
+      addDark()
     }
 
     const url = this.router.url.split('?')[0]
-    this.themeList = this.themeList.filter(t => {
-      return t.url !== url
-    })
+    const defaultTheme = settings.theme?.toLowerCase?.()
+    this.themeList = this.themeList
+      .map((item) => {
+        if (item.url === '/' + defaultTheme) {
+          item.url = '/'
+        }
+        return item
+      })
+      .filter((t) => {
+        if (url === '/' && url + settings.theme?.toLowerCase?.() === t.url) {
+          return false
+        }
+        if (t.url === '/' && url === t.url + settings.theme?.toLowerCase?.()) {
+          return false
+        }
+        return t.url !== url
+      })
+
+    if (!isLogin) {
+      const isShowFace =
+        [settings.showLanguage, settings.showThemeToggle].filter(Boolean)
+          .length === 0
+      if (isShowFace) {
+        this.open = true
+        this.isShowFace = false
+      }
+    }
   }
 
-  toggleTheme(theme) {
+  ngOnInit() {}
+
+  toggleTheme(theme: any) {
     this.router.navigate([theme.url], {
-      queryParams: queryString()
+      queryParams: {
+        ...queryString(),
+        _: Date.now(),
+      },
     })
     this.removeBackground()
   }
@@ -94,7 +132,7 @@ export class FixbarComponent {
 
     window.scrollTo({
       top: 0,
-      behavior: 'smooth'
+      behavior: 'smooth',
     })
   }
 
@@ -109,22 +147,29 @@ export class FixbarComponent {
 
   toggleMode() {
     this.isDark = !this.isDark
-    mitt.emit('dark', this.isDark)
-    window.localStorage.setItem(STORAGE_KEY_MAP.isDark, String(Number(this.isDark)))
-    document.documentElement.classList.toggle('dark-container')
+    mitt.emit('EVENT_DARK', this.isDark)
+    window.localStorage.setItem(
+      STORAGE_KEY_MAP.isDark,
+      String(Number(this.isDark))
+    )
 
     if (this.isDark) {
+      addDark()
       this.removeBackground()
     } else {
+      removeDark()
       const { data } = this.activatedRoute.snapshot
-      data?.renderLinear && randomBgImg()
+      data['renderLinear'] && randomBgImg()
     }
   }
 
   goSystemPage() {
     this.router.navigate(['system'])
-    const html = document.documentElement
-    html.classList.remove('dark-container')
+  }
+
+  handleOpen() {
+    this.open = !this.open
+    localStorage.setItem(STORAGE_KEY_MAP.fixbarOpen, String(this.open))
   }
 
   handleSync() {
@@ -138,27 +183,21 @@ export class FixbarComponent {
       nzOkText: $t('_confirmSync'),
       nzContent: $t('_confirmSyncTip'),
       nzOnOk: () => {
-        this.syncLoading = true;
+        this.syncLoading = true
 
         updateFileContent({
           message: 'update db',
           content: JSON.stringify(this.websiteList),
-          path: DB_PATH
+          path: DB_PATH,
         })
-        .then(() => {
-          this.message.success($t('_syncSuccessTip'))
-        })
-        .catch(res => {
-          this.notification.error(
-            `${$t('_error')}: ${res?.response?.status ?? 1401}`,
-            $t('_syncFailTip')
-          )
-        })
-        .finally(() => {
-          this.syncLoading = false
-        })
-      }
-    });
+          .then(() => {
+            this.message.success($t('_syncSuccessTip'))
+          })
+          .finally(() => {
+            this.syncLoading = false
+          })
+      },
+    })
   }
 
   toggleLocale() {

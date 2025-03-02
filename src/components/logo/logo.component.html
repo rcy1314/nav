@@ -1,16 +1,28 @@
 <img
-  *ngIf="url && !hasError; else noSrc"
-  [src]="url"
-  class="icon dark-border-color"
-  [ngStyle]="{ width: size + 'px', height: size + 'px' }"
-  (error)="onError()"
+  *ngIf="src; else noSrc"
+  [src]="src"
+  class="icon common-icon"
+  [ngStyle]="{
+    width: size === 0 ? '' : size + 'px',
+    height: size === 0 ? '' : size + 'px',
+    minWidth: size + 'px',
+    minHeight: size + 'px',
+    borderRadius: radius + 'px'
+  }"
   draggable="false"
->
+  loading="lazy"
+  [alt]="name ? name[0] : ''"
+/>
 
 <ng-template #noSrc>
   <div
-    class="circle"
-    [ngStyle]="{ 'background-color': colour, 'width': size + 'px', 'height': size + 'px' }"
+    class="circle common-icon"
+    [ngStyle]="{
+      width: size === 0 ? '' : size + 'px',
+      height: size === 0 ? '' : size + 'px',
+      minWidth: size + 'px',
+      minHeight: size + 'px'
+    }"
   >
     {{ name ? name[0] : '' }}
   </div>
