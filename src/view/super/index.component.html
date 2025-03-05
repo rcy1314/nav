@@ -1,0 +1,146 @@
+<section class="super-xjh dark-bg">
+  <nz-spin
+    nzSimple
+    *ngIf="commonService.sliceMax === 0"
+    class="position-center"
+  />
+
+  <header class="sheader dark-bg">
+    <div class="headerbox">
+      <div class="hitem">
+        <img
+          class="logo"
+          [src]="commonService.settings.favicon"
+          draggable="false"
+        />
+        <div class="title dark-white">
+          {{ commonService.settings.superTitle || commonService.title }}
+        </div>
+      </div>
+
+      <div class="topnav dark-scrollbar">
+        <div
+          *ngFor="
+            let item of commonService.websiteList.slice(
+              0,
+              commonService.overIndex
+            );
+            index as i;
+            trackBy: commonService.trackByItem
+          "
+          (click)="commonService.handleClickClass(item.id)"
+          [class.active]="commonService.oneIndex === i"
+          [class.dark-text-active]="commonService.oneIndex === i"
+          class="hitem over-item dark-text"
+        >
+          {{ item.title }}
+        </div>
+        <!-- More -->
+        <app-web-more-menu
+          *ngIf="commonService.overIndex < commonService.websiteList.length"
+          [data]="
+            commonService.websiteList.slice(commonService.overIndex, 99999)
+          "
+          [index]="commonService.overIndex"
+          [page]="commonService.oneIndex"
+          (onClick)="commonService.handleClickClass($event)"
+          class="flex-center"
+        />
+      </div>
+    </div>
+  </header>
+
+  <div class="component-box" *ngIf="commonService.settings.components.length">
+    <component-group></component-group>
+  </div>
+
+  <div class="main-box">
+    <div
+      class="left dark-bg dark-border-color dark-scrollbar"
+      *ngIf="commonService.websiteList[commonService.oneIndex]"
+    >
+      <div
+        class="bar-item dark-text dark-hover ellipsis"
+        [class.active]="commonService.twoIndex === i"
+        [class.dark-item-active]="commonService.twoIndex === i"
+        (click)="commonService.handleClickClass(item.id)"
+        *ngFor="
+          let item of commonService.websiteList[commonService.oneIndex].nav;
+          index as i;
+          trackBy: commonService.trackByItem
+        "
+      >
+        <img *ngIf="item.icon" class="sideicon" [src]="item.icon" />
+        <span class="ellipsis">{{ item.title }}</span>
+      </div>
+    </div>
+
+    <div
+      class="middle dark-bg"
+      [class.noads]="commonService.settings.superImages.length <= 0"
+    >
+      <div class="search-t dark-border-color">
+        <app-search />
+
+        <div class="bar dark-scrollbar select-none">
+          <div
+            class="bar-item"
+            *ngFor="
+              let item of commonService.currentList;
+              index as i;
+              trackBy: commonService.trackByItem
+            "
+            [class.active]="commonService.selectedThreeIndex === i"
+            [class.dark-white]="commonService.selectedThreeIndex === i"
+            [class.none]="!item.title"
+            (click)="commonService.handleClickClass(item.id)"
+          >
+            {{ item.title }}
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="card-container"
+        *ngIf="
+          commonService.currentList[commonService.selectedThreeIndex]?.nav
+            ?.length;
+          else noData
+        "
+      >
+        <app-card
+          *ngFor="
+            let el of commonService.currentList[
+              commonService.selectedThreeIndex
+            ].nav.slice(0, commonService.sliceMax);
+            trackBy: commonService.trackByItemWeb
+          "
+          [cardStyle]="commonService.settings.superCardStyle"
+          [dataSource]="el"
+        />
+      </div>
+      <ng-template #noData>
+        <app-no-data />
+      </ng-template>
+
+      <div
+        class="apply"
+        *ngIf="
+          commonService.currentList.length &&
+          commonService.currentList[0].title &&
+          (commonService.isLogin || commonService.permissions.create)
+        "
+      >
+        <span class="appbtn" (click)="openCreateWebModal()">{{
+          commonService.isLogin ? $t('_add') : $t('_apply')
+        }}</span>
+      </div>
+    </div>
+
+    <app-side-images [data]="commonService.settings.superImages" />
+  </div>
+
+  <app-footer [content]="commonService.settings.superFooterHTML" />
+
+  <app-fixbar [showCollapse]="false" />
+</section>

@@ -1,17 +1,47 @@
-<img
-  *ngIf="url && !hasError; else noSrc"
-  [src]="url"
-  class="icon dark-border-color"
-  [ngStyle]="{ width: size + 'px', height: size + 'px' }"
-  (error)="onError()"
-  draggable="false"
+<div
+  *ngIf="!src; else img"
+  class="circle common-icon"
+  [ngStyle]="{
+    width: size === 0 ? '' : size + 'px',
+    height: size === 0 ? '' : size + 'px',
+    minWidth: size + 'px',
+    minHeight: size + 'px',
+    background: backgroundColor
+  }"
 >
+  {{ firstLetter }}
+</div>
 
-<ng-template #noSrc>
+<ng-template #img>
+  <img
+    *ngIf="!isError"
+    [src]="src"
+    class="icon common-icon"
+    [ngStyle]="{
+      width: size === 0 ? '' : size + 'px',
+      height: size === 0 ? '' : size + 'px',
+      minWidth: size + 'px',
+      minHeight: size + 'px',
+      borderRadius: radius + 'px'
+    }"
+    draggable="false"
+    loading="lazy"
+    [alt]="firstLetter"
+    (error)="onError()"
+  />
+
   <div
-    class="circle"
-    [ngStyle]="{ 'background-color': colour, 'width': size + 'px', 'height': size + 'px' }"
+    *ngIf="isError"
+    class="circle common-icon"
+    [ngStyle]="{
+      width: size === 0 ? '' : size + 'px',
+      height: size === 0 ? '' : size + 'px',
+      minWidth: size + 'px',
+      minHeight: size + 'px',
+      borderRadius: radius + 'px',
+      background: backgroundColor
+    }"
   >
-    {{ name ? name[0] : '' }}
+    {{ firstLetter }}
   </div>
 </ng-template>

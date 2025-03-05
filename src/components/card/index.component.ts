@@ -1,55 +1,90 @@
-// @ts-nocheck
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
-import { Component, OnInit, Input, ViewChildren, QueryList } from '@angular/core'
+import { Component, Input, ViewChild, ElementRef } from '@angular/core'
+import { FormsModule } from '@angular/forms'
+import { CommonModule } from '@angular/common'
+import { isLogin, getPermissions } from 'src/utils/user'
+import { copyText, getTextContent } from 'src/utils'
+import { parseHtmlWithContent, parseLoadingWithContent } from 'src/utils/util'
+import { setWebsiteList, deleteWebByIds } from 'src/utils/web'
+import { INavProps, IWebProps, ICardType, ActionType } from 'src/types'
+import { $t, isZhCN } from 'src/locale'
+import { settings, websiteList } from 'src/store'
+import { JumpService } from 'src/services/jump'
+import { NzRateModule } from 'ng-zorro-antd/rate'
+import { LogoComponent } from 'src/components/logo/logo.component'
+import { NzButtonModule } from 'ng-zorro-antd/button'
+import { TagListComponent } from 'src/components/tag-list/index.component'
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
+import { NzIconModule } from 'ng-zorro-antd/icon'
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm'
+import { SafeHtmlPipe } from 'src/pipe/safeHtml.pipe'
+import { saveUserCollect } from 'src/api'
 import { NzMessageService } from 'ng-zorro-antd/message'
-import { getToken } from '../../utils/user'
-import { setWebsiteList, copyText, deleteByWeb, getTextContent, updateByWeb } from '../../utils'
-import { websiteList } from '../../store'
-import { INavProps, ITagProp, INavFourProp } from '../../types'
-import * as __tag from '../../../data/tag.json'
-import { $t } from '../../locale'
-import { MoveSiteComponent } from '../move-site/index.component'
-import { settings } from 'src/store'
-
-const tagMap: ITagProp = (__tag as any).default
+import { CommonService } from 'src/services/common'
+import event from 'src/utils/mitt'
 
 @Component({
+  standalone: true,
+  imports: [
+    FormsModule,
+    CommonModule,
+    NzRateModule,
+    LogoComponent,
+    NzButtonModule,
+    TagListComponent,
+    NzToolTipModule,
+    NzIconModule,
+    NzPopconfirmModule,
+    SafeHtmlPipe,
+  ],
   selector: 'app-card',
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss'],
 })
-export class CardComponent implements OnInit {
-  @Input() dataSource: INavFourProp
-  @Input() indexs: Array<number>
+export class CardComponent {
+  @Input() dataSource!: IWebProps
+  @Input() cardStyle: ICardType = 'standard'
+  @ViewChild('root', { static: false }) root!: ElementRef
 
-  @ViewChildren(MoveSiteComponent)
-  moveSiteChild: QueryList<MoveSiteComponent>
-
-  $t = $t
-  objectKeys = Object.keys
-  settings = settings
-  websiteList: INavProps[] = websiteList
-  isLogin: boolean = !!getToken()
-  showCreateModal = false
-  showMoveModal = false
+  readonly $t = $t
+  readonly settings = settings
+  readonly websiteList: INavProps[] = websiteList
+  readonly isLogin = isLogin
+  readonly permissions = getPermissions(settings)
   copyUrlDone = false
   copyPathDone = false
-  tagMap = tagMap
+  description = ''
+  isCode = false
 
   constructor(
-    private message: NzMessageService,
+    public commonService: CommonService,
+    public readonly jumpService: JumpService,
+    private message: NzMessageService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.isCode = this.dataSource.desc?.[0] === '!'
+    this.description = parseLoadingWithContent(this.dataSource.desc)
   }
 
-  async copyUrl(e, type: number) {
-    const w = this.dataSource
+  ngAfterViewInit() {
+    this.parseDescription()
+  }
+
+  private parseDescription() {
+    parseHtmlWithContent(this.root?.nativeElement, this.dataSource.desc)
+  }
+
+  async copyUrl(e: Event, type: 1 | 2): Promise<void> {
+    const { name, url } = this.dataSource
     const { origin, hash, pathname } = window.location
-    const pathUrl = `${origin}${pathname}${hash}?q=${w.name}&url=${encodeURIComponent(w.url)}`
-    const isDone = await copyText(e, type === 1 ? pathUrl : w.url)
+    const pathUrl = `${origin}${pathname}${hash}?q=${name}&url=${encodeURIComponent(
+      url
+    )}`
+    const isDone = await copyText(e, type === 1 ? pathUrl : url)
 
     if (type === 1) {
       this.copyPathDone = isDone
@@ -58,53 +93,57 @@ export class CardComponent implements OnInit {
     }
   }
 
-  copyMouseout() {
+  copyMouseout(): void {
     this.copyUrlDone = false
     this.copyPathDone = false
   }
 
-  toggleCreateModal() {
-    this.showCreateModal = !this.showCreateModal
-  }
-
-  toggleMoveModal() {
-    this.showMoveModal = !this.showMoveModal
-  }
-
-  onRateChange(n: number) {
-    this.dataSource.rate = n
-    setWebsiteList(this.websiteList)
-  }
-
-  handleUpdateSiteOk(payload: INavFourProp) {
-    updateByWeb({
-      ...this.dataSource,
-      name: getTextContent(this.dataSource.name),
-      desc: getTextContent(this.dataSource.desc)
-    }, payload)
-
-    const keys = Object.keys(payload)
-    for (let k of keys) {
-      this.dataSource[k] = payload[k]
-    }
-
-    this.message.success($t('_modifySuccess'))
-    this.toggleCreateModal()
-  }
-
-  confirmDel() {
-    deleteByWeb({
-      ...this.dataSource,
-      name: getTextContent(this.dataSource.name),
-      desc: getTextContent(this.dataSource.desc)
+  openEditWebMoal(): void {
+    event.emit('CREATE_WEB', {
+      detail: this.dataSource,
     })
   }
 
-  handleMove() {
-    this.moveSiteChild.changes.subscribe((comps: QueryList<MoveSiteComponent>) =>
-    {
-      comps.first?.pushMoveSites([this.dataSource])
-    });
-    this.showMoveModal = true
+  onRateChange(rate: number): void {
+    this.dataSource.rate = rate
+    setWebsiteList(this.websiteList)
+  }
+
+  async confirmDel(): Promise<void> {
+    const params: IWebProps = {
+      ...(this.dataSource as IWebProps),
+      name: getTextContent(this.dataSource.name),
+      desc: getTextContent(this.dataSource.desc),
+    }
+    if (isLogin) {
+      if (await deleteWebByIds([params.id])) {
+        this.message.success($t('_delSuccess'))
+      }
+    } else {
+      try {
+        await saveUserCollect({
+          data: {
+            ...params,
+            extra: {
+              type: ActionType.Delete,
+            },
+          },
+        })
+        this.message.success($t('_waitHandle'))
+      } catch (error: any) {
+        this.message.error(error.message)
+      }
+    }
+  }
+
+  openMoveWebModal(): void {
+    event.emit('MOVE_WEB', {
+      data: [this.dataSource],
+    })
+  }
+
+  get getRate(): string {
+    const rate = Number(this.dataSource.rate ?? 0)
+    return rate > 0 ? `${rate.toFixed(1)}${isZhCN() ? '分' : ''}` : ''
   }
 }

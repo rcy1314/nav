@@ -1,0 +1,126 @@
+<div
+  class="index-wrapper dark-bg"
+  [class.noimg]="commonService.settings.lightImages.length <= 0"
+>
+  <div class="light-box">
+    <div
+      class="component-box hidden-scrollbar hidden 2xl:block"
+      *ngIf="commonService.settings.components.length"
+    >
+      <component-group direction="column"></component-group>
+    </div>
+
+    <main class="homepage dark-border-color dark-bg">
+      <nav
+        *ngIf="commonService.websiteList.length"
+        class="top-nav dark-scrollbar dark-border-color dark-bg"
+      >
+        <span
+          *ngFor="
+            let item of commonService.websiteList.slice(
+              0,
+              commonService.overIndex
+            );
+            index as i;
+            trackBy: commonService.trackByItem
+          "
+          (click)="commonService.handleClickClass(item.id)"
+          [class.active]="commonService.oneIndex === i"
+          [class.dark-text-active]="commonService.oneIndex === i"
+          class="over-item ripple-btn dark-text"
+        >
+          {{ item.title }}
+        </span>
+        <!-- More -->
+        <app-web-more-menu
+          *ngIf="commonService.overIndex < commonService.websiteList.length"
+          [data]="
+            commonService.websiteList.slice(commonService.overIndex, 99999)
+          "
+          [index]="commonService.overIndex"
+          [page]="commonService.oneIndex"
+          (onClick)="commonService.handleClickClass($event)"
+        />
+      </nav>
+
+      <section class="index-section select-none dark-bg">
+        <div
+          class="sidebar dark-bg dark-border-color dark-scrollbar"
+          id="sidebar"
+        >
+          <div *ngIf="commonService.websiteList[commonService.oneIndex]">
+            <div
+              class="tag dark-text"
+              [class.active]="commonService.twoIndex === i"
+              [class.dark-item-active]="commonService.twoIndex === i"
+              (click)="commonService.handleClickClass(item.id)"
+              *ngFor="
+                let item of commonService.websiteList[commonService.oneIndex]
+                  .nav;
+                index as i;
+                trackBy: commonService.trackByItem
+              "
+            >
+              {{ item.title }}
+            </div>
+          </div>
+        </div>
+
+        <div class="main dark-scrollbar">
+          <app-search />
+
+          <div *ngIf="commonService.currentList.length > 0; else noData">
+            <nz-spin
+              nzSimple
+              *ngIf="commonService.sliceMax === 0"
+              class="position-center"
+            ></nz-spin>
+            <div
+              *ngFor="
+                let item of commonService.currentList.slice(
+                  0,
+                  commonService.sliceMax
+                );
+                index as i;
+                trackBy: commonService.trackByItem
+              "
+            >
+              <app-toolbar-title
+                [dataSource]="item"
+                (onCollapse)="commonService.onCollapse(item)"
+              />
+
+              <div
+                class="px-3 grid gap-x-4 gap-y-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+                [class.hidden]="item['collapsed']"
+              >
+                <app-card
+                  *ngFor="
+                    let el of item.nav;
+                    trackBy: commonService.trackByItemWeb
+                  "
+                  [cardStyle]="commonService.settings.lightCardStyle"
+                  [dataSource]="el"
+                  class="column-border"
+                />
+              </div>
+            </div>
+          </div>
+
+          <ng-template #noData>
+            <app-no-data />
+          </ng-template>
+        </div>
+      </section>
+    </main>
+
+    <app-side-images [data]="commonService.settings.lightImages" />
+  </div>
+
+  <app-footer [content]="commonService.settings.lightFooterHTML" />
+  <app-fixbar
+    (onCollapse)="commonService.onCollapseAll()"
+    [collapsed]="commonService.collapsed"
+    selector=".main"
+  />
+</div>

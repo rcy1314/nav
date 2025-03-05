@@ -1,54 +1,90 @@
-// Copyright @ 2018-present xiejiahe. All rights reserved. MIT license.
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
 // See https://github.com/xjh22222228/nav
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { FormsModule } from '@angular/forms'
 import { NzMessageService } from 'ng-zorro-antd/message'
-import { NzNotificationService } from 'ng-zorro-antd/notification'
-import { verifyToken } from '../../services'
-import { setToken } from '../../utils/user'
+import { verifyToken, updateFileContent, createBranch } from 'src/api'
+import { setToken, removeToken, removeWebsite } from 'src/utils/user'
 import { $t } from 'src/locale'
+import { isSelfDevelop } from 'src/utils/util'
+import { NzModalModule } from 'ng-zorro-antd/modal'
+import { NzInputModule } from 'ng-zorro-antd/input'
 
 @Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule, NzModalModule, NzInputModule],
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  @Input() visible: boolean = false
-  @Output() onCancel = new EventEmitter()
+  @Input() visible = false
+  @Output() onCancel = new EventEmitter<void>()
 
-  $t = $t
+  readonly $t = $t
+  readonly isSelfDevelop = isSelfDevelop
   token = ''
-  submiting = false
+  submitting = false
 
-  constructor(
-    private message: NzMessageService,
-    private notification: NzNotificationService,
-  ) {}
+  constructor(private readonly message: NzMessageService) {}
 
-  ngOnInit() {}
+  ngOnInit(): void {}
 
-  hanldeCancel() {
+  ngAfterViewInit(): void {
+    this.inputFocus()
+  }
+
+  handleCancel(): void {
     this.onCancel.emit()
   }
 
-  login() {
-    if (!this.token || this.token.length < 40) {
-      return this.message.error($t('_pleaseInputToken'))
+  private inputFocus(): void {
+    setTimeout(() => {
+      document.getElementById('loginInput')?.focus()
+    }, 300)
+  }
+
+  onKey(event: KeyboardEvent): void {
+    if (event.code === 'Enter') {
+      this.login()
+    }
+  }
+
+  async login(): Promise<void> {
+    if (!this.token) {
+      this.message.error($t('_pleaseInputToken'))
+      return
     }
 
-    this.submiting = true
-    verifyToken(this.token)
-      .then(() => {
-        setToken(this.token);
-        this.message.success($t('_tokenVerSuc'))
-        setTimeout(() => window.location.reload(), 2000)
-      })
-      .catch(res => {
-        this.notification.error($t('_tokenVerFail'), res.message as string)
-      })
-      .finally(() => {
-        this.submiting = false
-      })
+    const token = this.token.trim()
+    this.submitting = true
+
+    try {
+      await verifyToken(token)
+      setToken(token)
+
+      try {
+        await updateFileContent({
+          message: 'auth',
+          path: '.navauth',
+          content: 'OK',
+        })
+
+        createBranch('image').finally(() => {
+          this.message.success($t('_tokenVerSuc'))
+          removeWebsite().finally(() => {
+            window.location.reload()
+          })
+        })
+      } catch {
+        removeToken()
+        this.submitting = false
+      }
+    } catch {
+      this.submitting = false
+    }
   }
 }

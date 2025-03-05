@@ -1,9 +1,10 @@
-<div class="fixbar">
+<div class="fixbar" [class.openFixbar]="open">
   <div
-    class="wrapper dark-bg dark-border-color dark-action-hover"
+    class="common-show wrapper dark-bg dark-border-color dark-action-hover"
     nz-dropdown
     [nzDropdownMenu]="menu"
     nzPlacement="topLeft"
+    *ngIf="settings.showThemeToggle"
   >
     <img src="assets/img/theme.svg" />
   </div>
@@ -19,66 +20,88 @@
     </ul>
   </nz-dropdown-menu>
 
-  <span *ngIf="isLogin" nz-tooltip [nzTooltipTitle]="$t('_syncData')">
-    <div
-      class="wrapper dark-bg dark-border-color dark-action-hover"
-      (click)="handleSync()"
-      [class.rotate]="syncLoading"
-    >
-      <i class="iconfont iconwinfo-icon-tongbu"></i>
-    </div>
-  </span>
-
-  <span *ngIf="isLogin" nz-tooltip [nzTooltipTitle]="$t('_addData')">
-    <div class="wrapper dark-bg dark-border-color dark-action-hover" (click)="goSystemPage()">
-      <i class="iconfont iconchuangjian"></i>
-    </div>
-  </span>
-  
-  <span *ngIf="showCollapse" nz-tooltip [nzTooltipTitle]="collapsed ? $t('_collapse') : $t('_put')">
-    <div class="wrapper dark-bg dark-border-color dark-action-hover" (click)="collapse()">
-      <i class="iconfont iconweibiaoti25 collapse" [class.active]="collapsed"></i>
-    </div>
-  </span>
-
-  <span nz-tooltip [nzTooltipTitle]="isDark ? $t('_closeDark') : $t('_openDark')">
-    <div class="wrapper dark-bg dark-border-color dark-action-hover" (click)="toggleMode()">
-      <i class="iconfont icondark dark" *ngIf="!isDark"></i>
-      <img class="iconfont icondark" src="assets/img/light.svg" *ngIf="isDark">
-    </div>
-  </span>
-
-  <div *ngIf="settings.mirrorList.length > 0">
-    <div
-      class="wrapper dark-bg dark-border-color dark-action-hover"
-      nz-dropdown
-      [nzDropdownMenu]="menuMirror"
-      nzPlacement="topRight"
-    >
-      <img src="assets/img/mirror.svg" />
-    </div>
-    <nz-dropdown-menu #menuMirror="nzDropdownMenu">
-      <ul nz-menu nzSelectable>
-        <li
-          nz-menu-item
-          *ngFor="let item of settings.mirrorList"
-        >
-          <a [href]="item['url']">
-            {{ item['name'] }}
-          </a>
-        </li>
-      </ul>
-    </nz-dropdown-menu>
+  <div
+    class="common-show wrapper dark-bg dark-border-color dark-action-hover"
+    (click)="handleSync()"
+    [class.rotate]="syncLoading"
+    *ngIf="isLogin"
+    nz-tooltip
+    [nzTooltipTitle]="$t('_syncData')"
+  >
+    <i class="iconfont iconwinfo-icon-tongbu font-bold" style="color: red"></i>
   </div>
 
-  <span *ngIf="settings.showLanguage">
-    <div class="wrapper dark-bg dark-border-color dark-action-hover" (click)="toggleLocale()">
-      <img class="iconfont" src="assets/img/china.svg" *ngIf="language === 'zh-CN'">
-      <img class="iconfont" src="assets/img/ua.svg" *ngIf="!language || language === 'en'">
-    </div>
-  </span>
-  
-  <div class="wrapper dark-bg dark-border-color dark-action-hover" (click)="goTop()">
-    <i class="iconfont iconjiantouarrow483 arrow"></i>
+  <div
+    *ngIf="isLogin"
+    nz-tooltip
+    [nzTooltipTitle]="$t('_addData')"
+    class="common-show wrapper dark-bg dark-border-color dark-action-hover"
+    (click)="goSystemPage()"
+  >
+    <i class="iconfont iconchuangjian"></i>
+  </div>
+
+  <div
+    class="common-show wrapper dark-bg dark-border-color dark-action-hover"
+    (click)="collapse()"
+    *ngIf="showCollapse"
+    nz-tooltip
+    [nzTooltipTitle]="collapsed ? $t('_collapse') : $t('_put')"
+  >
+    <i
+      class="iconfont iconweibiaoti25 collapse-icon"
+      [class.active]="collapsed"
+    ></i>
+  </div>
+
+  <div
+    nz-tooltip
+    [nzTooltipTitle]="isDark ? $t('_closeDark') : $t('_openDark')"
+    class="common-show wrapper dark-bg dark-border-color dark-action-hover"
+    (click)="toggleMode()"
+  >
+    <i class="iconfont icondark dark" *ngIf="!isDark"></i>
+    <img class="iconfont icondark" src="assets/img/light.svg" *ngIf="isDark" />
+  </div>
+
+  <div
+    *ngIf="settings.showLanguage"
+    class="common-show wrapper dark-bg dark-border-color dark-action-hover"
+    (click)="toggleLocale()"
+  >
+    <img
+      class="iconfont"
+      src="assets/img/china.svg"
+      *ngIf="language === 'zh-CN'"
+    />
+    <img
+      class="iconfont"
+      src="assets/img/ua.svg"
+      *ngIf="!language || language === 'en'"
+    />
+  </div>
+
+  <div
+    class="wrapper dark-bg dark-border-color dark-action-hover"
+    (click)="handleOpen()"
+    *ngIf="isShowFace"
+  >
+    <i
+      class="iconfont font-bold"
+      [class.iconxiaolian]="open"
+      [class.iconxiaolian-02]="!open"
+      style="color: rgb(231, 127, 81); font-size: 22px"
+    ></i>
+  </div>
+
+  <div
+    class="wrapper dark-bg dark-border-color dark-action-hover"
+    (click)="goTop()"
+    *ngIf="showTop"
+  >
+    <i
+      class="iconfont iconjiantouarrow483 arrow"
+      style="color: rgb(61, 136, 82)"
+    ></i>
   </div>
 </div>

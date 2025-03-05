@@ -1,0 +1,35 @@
+name: Build web
+on:
+  push:
+    branches:
+      - dev
+      - master
+      - main
+      - own
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Set Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+      - name: Install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+      # dist/404.html: gh-pages history mode
+      - name: Build
+        run: |
+          npm run build-gh-pages
+          cp dist/browser/index.html dist/browser/404.html
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.TOKEN }}
+          branch: gh-pages
+          folder: dist/browser

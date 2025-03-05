@@ -1,0 +1,81 @@
+<nz-spin nzTip="Loading..." [nzSpinning]="submitting">
+  <div *ngIf="isPermission">
+    <button
+      *ngIf="!isSelfDevelop"
+      nz-button
+      nzType="primary"
+      (click)="handleSubmit()"
+      [nzLoading]="submitting"
+      style="margin-right: 20px"
+    >
+      {{ $t('_save') }}
+    </button>
+
+    <button nz-button (click)="getUserCollect()" [nzLoading]="submitting">
+      {{ $t('_refresh') }}
+    </button>
+
+    <button
+      nz-button
+      nzType="primary"
+      nzDanger
+      (click)="batchDelete()"
+      [nzLoading]="submitting"
+      style="margin-left: 20px"
+    >
+      {{ $t('_del') }}
+    </button>
+
+    <div class="mb-2.5 mt-2.5 color-red font-bold" *ngIf="!isSelfDevelop">
+      处理完成所有数据后需要点击一次保存方可生效
+    </div>
+    <nz-table #basicTable [nzData]="dataList" [nzShowPagination]="false">
+      <thead>
+        <tr>
+          <th
+            [nzChecked]="checked"
+            (nzCheckedChange)="onAllChecked($event)"
+          ></th>
+          <th nzWidth="80px">{{ $t('_action') }}</th>
+          <th nzWidth="80px">{{ $t('_type') }}</th>
+          <th nzWidth="80px">ID</th>
+          <th nzWidth="80px">{{ $t('_icon') }}</th>
+          <th nzWidth="100px">{{ $t('_webName') }}</th>
+          <th nzWidth="100px">{{ $t('_associatedLabels') }}</th>
+          <th nzWidth="300px">{{ $t('_webDesc') }}</th>
+          <th nzWidth="300px">{{ $t('_webTag') }}</th>
+          <th>{{ $t('_createAt') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of dataList; index as idx; trackBy: trackByItem">
+          <td
+            [nzChecked]="setOfCheckedId.has(data.extra.uuid)"
+            (nzCheckedChange)="onItemChecked(data.extra.uuid, $event)"
+          ></td>
+          <td>
+            <a (click)="handleClick(data, idx)">{{ $t('_handle') }}</a>
+          </td>
+          <td>{{ typeMap[data.extra.type] }}</td>
+          <td>{{ data.id }}</td>
+          <td>
+            <app-logo [src]="data.icon" [name]="data.name" />
+          </td>
+          <td>
+            <a [href]="data.url" target="_blank">{{ data.name }}</a>
+          </td>
+          <td>
+            <tag-list [data]="data.tags" *ngIf="data.tags" />
+          </td>
+          <td>
+            <pre class="desc">{{ data.desc }}</pre>
+          </td>
+          <td nzWidth="300px">
+            {{ data.breadcrumb }}
+          </td>
+          <td>{{ data.createdAt }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-spin>

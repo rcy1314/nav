@@ -1,0 +1,69 @@
+<button
+  nz-button
+  nzType="primary"
+  (click)="handleSubmit()"
+  [nzLoading]="submitting"
+  class="mb-4"
+>
+  {{ $t('_save') }}
+</button>
+
+<div class="mb-4 color-red font-bold" *ngIf="!isSelfDevelop">
+  {{ $t('_buildTip') }}
+</div>
+
+<div class="mb-4">
+  <div class="flex items-center">
+    <span class="mr-2">Size:</span>
+    <nz-slider
+      style="width: 200px"
+      [(ngModel)]="compoentZoom"
+      [nzStep]="0.1"
+      [nzMin]="0.1"
+      [nzMax]="2"
+      (ngModelChange)="handleZoomChange($event)"
+    ></nz-slider>
+  </div>
+</div>
+
+<div class="flex gap-4 w-full flex-wrap select-none">
+  <div *ngFor="let item of components; let idx = index; trackBy: trackByItem">
+    <ng-container [ngSwitch]="item.type">
+      <app-calendar *ngSwitchCase="ComponentType.Calendar" [data]="item" />
+      <app-runtime *ngSwitchCase="ComponentType.Runtime" [data]="item" />
+      <app-offwork *ngSwitchCase="ComponentType.OffWork" [data]="item" />
+      <app-image *ngSwitchCase="ComponentType.Image" [data]="item" />
+      <app-countdown *ngSwitchCase="ComponentType.Countdown" [data]="item" />
+      <app-html *ngSwitchCase="ComponentType.HTML" [data]="item" />
+      <app-holiday *ngSwitchCase="ComponentType.Holiday" [data]="item" />
+    </ng-container>
+
+    <div class="text-center mt-3">
+      <div>{{ componentTitleMap[item.type] }}</div>
+      <a (click)="moveUp(idx)">{{ $t('_moveUp') }}</a>
+      <a (click)="moveDown(idx)" class="mx-2.5">{{ $t('_moveDown') }}</a>
+      <a (click)="handleEdit(item, idx)">{{ $t('_edit') }}</a>
+      <div>
+        <a (click)="onAdd(item)">{{ $t('_copy') }}</a>
+        <a
+          *ngIf="item.id >= 0"
+          class="color-red ml-2"
+          nz-popconfirm
+          nzOkType="danger"
+          [nzPopconfirmTitle]="$t('_confirmDel')"
+          nzPopconfirmPlacement="bottom"
+          (nzOnConfirm)="onDelete(idx)"
+          >{{ $t('_del') }}</a
+        >
+      </div>
+    </div>
+  </div>
+</div>
+
+<calendar-drawer #calendar (ok)="handleOk($event)" />
+<runtime-drawer #runtime (ok)="handleOk($event)" />
+<offwork-drawer #offwork (ok)="handleOk($event)" />
+<image-drawer #image (ok)="handleOk($event)" />
+<countdown-drawer #countdown (ok)="handleOk($event)" />
+<html-drawer #html (ok)="handleOk($event)" />
+<holiday-drawer #holiday (ok)="handleOk($event)" />

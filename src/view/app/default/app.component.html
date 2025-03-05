@@ -1,58 +1,76 @@
-<section class="app-page user-select-none">
+<section class="app-page select-none">
   <header class="header">
     <div class="header-top">
-      <img [src]="LOGO_CDN" class="logo" alt="logo">
+      <img [src]="commonService.settings.favicon" class="logo" alt="logo" />
       <div class="open" [class.active]="open" (click)="handleToggleOpen()">
         <i></i>
         <i></i>
         <i></i>
       </div>
     </div>
-    <nav class="nav-open">
-      <div 
-        *ngFor="let item of websiteList; let i = index;" 
-        (click)="handleCilckNav(i)" 
-        [class.active]="page === i" 
+
+    <nav class="nav-open" [class.active]="open">
+      <div
+        *ngFor="
+          let item of commonService.websiteList;
+          let i = index;
+          trackBy: commonService.trackByItem
+        "
+        (click)="handleCilckNav(item.id)"
+        [class.active]="commonService.oneIndex === i"
         class="nav-title"
       >
         {{ item.title }}
       </div>
     </nav>
   </header>
-  
-  <div class="wrapper" *ngIf="websiteList[page]">
-    <nav class="children-nav" *ngIf="websiteList[page].nav.length > 1">
-      <a
-        class="tag" 
-        *ngFor="let item of websiteList[page].nav; let i = index" 
-        [class.active]="id === i" 
-        (click)="handleSidebarNav(i)"
+
+  <app-search />
+
+  <div
+    class="wrapper"
+    *ngIf="commonService.websiteList[commonService.oneIndex]"
+  >
+    <nav
+      class="children-nav"
+      *ngIf="commonService.websiteList[commonService.oneIndex]?.nav?.length"
+    >
+      <span
+        class="tag"
+        *ngFor="
+          let item of commonService.websiteList[commonService.oneIndex].nav;
+          let i = index;
+          trackBy: commonService.trackByItem
+        "
+        [class.active]="commonService.twoIndex === i"
+        (click)="commonService.handleClickClass(item.id)"
       >
         {{ item.title }}
-      </a>
+      </span>
     </nav>
-    <ul>
-      <li *ngFor="let item of currentList">
-        <h2 class="block-title" *ngIf="item.title">
-          {{ item.title }} x {{ item.nav.length }}
-        </h2>
-        <div class="row">
-          <div class="item-list" *ngFor="let el of item.nav; index as i;">
-            <a [href]="el.url" target="_blank">
-              <div class="top">
-                <app-logo
-                  [src]="el.icon || ''"
-                  [name]="el.name"
-                  [size]="30"
-                >
-                </app-logo>
-                <em class="name" [title]="el.name">{{ el.name }}</em>
-              </div>
-              <pre class="desc" [title]="el.desc">{{ el.desc }}</pre>
-            </a>
-          </div>
-        </div>
-      </li>
-    </ul>
+    <div *ngFor="let item of commonService.currentList; index as i">
+      <h2 class="block-title" *ngIf="item.title">
+        {{ item.title }} x {{ item.nav.length }}
+      </h2>
+
+      <div
+        class="px-3 grid gap-x-4 gap-y-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4"
+        [class.hidden]="item['collapsed']"
+        [ngClass]="{
+          '2xl:grid-cols-6':
+            commonService.settings.sideCardStyle === 'original' ||
+            commonService.settings.sideCardStyle === 'example'
+        }"
+      >
+        <app-card
+          *ngFor="let el of item.nav; trackBy: commonService.trackByItemWeb"
+          [cardStyle]="commonService.settings.appCardStyle"
+          [dataSource]="el"
+          class="column-border"
+        ></app-card>
+      </div>
+    </div>
   </div>
+
+  <app-footer />
 </section>

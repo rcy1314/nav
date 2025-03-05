@@ -1,0 +1,11 @@
+.swiper {
+  user-select: none;
+  overflow: hidden;
+  ::ng-deep {
+    .slick-slide,
+    .slick-track,
+    .slick-list {
+      height: auto !important;
+    }
+  }
+}

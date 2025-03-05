@@ -1,32 +1,46 @@
-import { Component, Input } from '@angular/core'
-import { getCDN } from 'src/services'
+// 开源项目，未经作者同意，不得以抄袭/复制代码/修改源代码版权信息。
+// Copyright @ 2018-present xiejiahe. All rights reserved.
+// See https://github.com/xjh22222228/nav
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core'
+import { CommonModule } from '@angular/common'
+import { randomColor } from 'src/utils'
 
 @Component({
+  standalone: true,
+  imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-logo',
   templateUrl: './logo.component.html',
-  styleUrls: ['./logo.component.scss']
+  styleUrls: ['./logo.component.scss'],
 })
 export class LogoComponent {
   @Input() src: string = ''
   @Input() name: string = ''
-  @Input() colour: string = '#1890ff'
   @Input() size: number = 35
+  @Input() radius: number = 3
   @Input() check: boolean = true
 
-  hasError = false
-  url: string = ''
+  backgroundColor: string = '#1890ff'
+  firstLetter: string = ''
+  isError: boolean = false
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-    if (this.src?.startsWith('nav-')) {
-      this.url = getCDN(this.src)
-    } else {
-      this.url = this.src
+    if (!this.src) {
+      this.generateColor()
+    }
+    if (this.name) {
+      this.firstLetter = this.name[0].toUpperCase()
     }
   }
 
+  generateColor() {
+    this.backgroundColor = `linear-gradient(45deg, #fff, ${randomColor()} 41%)`
+  }
+
   onError() {
-    this.hasError = true;
+    this.isError = true
+    this.generateColor()
   }
 }

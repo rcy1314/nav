@@ -1,0 +1,148 @@
+@media (max-width: 1280px) {
+  .index-wrapper {
+    --width: 800px;
+    --sideImagesWidth: 200px;
+  }
+  .index-wrapper.noimg {
+    --width: 1000px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .index-wrapper {
+    --width: 800px !important;
+    --sideImagesWidth: 0 !important;
+  }
+}
+
+@media (max-width: 1000px) {
+  .light-box {
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 810px) {
+  .index-wrapper {
+    --top: 0;
+  }
+}
+
+.index-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding-top: var(--top, 15px);
+  overflow: hidden;
+  .light-box {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    margin: 0 auto;
+    column-gap: 20px;
+    overflow: hidden;
+  }
+  .component-box {
+    width: 320px;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+}
+
+.homepage {
+  width: var(--width, 1000px);
+  height: 100%;
+  position: relative;
+  background: #f9f9f9;
+  border-radius: 5px;
+  overflow: hidden;
+  transition: 0.1s linear;
+  border: 1px solid transparent;
+
+  .top-nav {
+    padding: 10px 0;
+    overflow: none;
+    overflow-x: auto;
+    white-space: nowrap;
+    border-bottom: 1px solid #eee;
+    text-align: center;
+    user-select: none;
+
+    ::ng-deep .more-btn,
+    .ripple-btn {
+      height: 40px;
+      position: relative;
+      padding: 0 15px;
+      color: #000;
+      cursor: pointer;
+      border-radius: 5px;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      &.active::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 20%;
+        right: 20%;
+        height: 3px;
+        border-radius: 2px;
+        background-color: rgb(16, 142, 233);
+      }
+    }
+  }
+}
+
+.index-section {
+  position: relative;
+  height: calc(100% - 52px);
+  overflow: hidden;
+
+  // 侧边栏分类
+  $sidebarWidth: 80px;
+  .sidebar {
+    position: relative;
+    width: $sidebarWidth;
+    height: calc(100% - 25px);
+    text-align: center;
+    border-right: 1px solid #eee;
+    overflow: hidden;
+    overflow-y: auto;
+
+    .tag {
+      position: relative;
+      cursor: pointer;
+      padding: 11px 1px;
+      overflow-wrap: break-word;
+      &.active {
+        color: #1890ff;
+        &::after,
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          width: 100%;
+        }
+        &:after {
+          top: 0;
+          border-top: 1px dashed #ccc;
+        }
+        &:before {
+          content: '';
+          bottom: 0;
+          border-bottom: 1px dashed #ccc;
+        }
+      }
+    }
+  }
+
+  .main {
+    width: calc(100% - #{$sidebarWidth});
+    position: absolute;
+    top: 0;
+    left: $sidebarWidth;
+    bottom: 30px;
+    padding-bottom: 50px;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+}

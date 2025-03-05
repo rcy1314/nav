@@ -3,6 +3,19 @@
   .content {
     padding: 30px;
     background-color: #fff;
-    margin-left: 10px;
+    min-width: 1200px;
+  }
+  .sidebar {
+    background-color: #fff;
+  }
+  .inner-layout {
+    margin-left: 15px;
+  }
+  .fixed-center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
   }
 }

@@ -1,168 +1,164 @@
-
 <p align="center">
   <a href="https://nav3.cn/?g">
-    <img src="src/assets/logo.png" width="130" />
+    <img src="https://gcore.jsdelivr.net/gh/xjh22222228/public@gh-pages/nav/logo.svg" width="130" />
   </a>
   <br />
-  <b>Discovery Navigation</b>
-  <p align="center">A purely static, powerful navigation website that supports SEO and online editing, I hope you will like it</p>
-  <p align="center">Built-in collection of up to 800+ high-quality websites to help you work, study and live</p>
+  <b>发现导航</b>
+  <p align="center">一个纯静态、支持SEO、在线编辑的强大导航网站，希望您会喜欢</p>
+  <p align="center">内置收录多达 800+ 优质网站， 助您工作、学习和生活</p>
   <p align="center">
-    <a href="README_zh-CN.md">
-      <img src="https://img.shields.io/badge/lang-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-red.svg?longCache=true&style=flat-square">
-    </a>
+    <a href="README_EN.md"><img alt="english" src="https://img.shields.io/static/v1.svg?label=&message=English&style=flat-square&color=ff5000"></a>
     <img src="https://img.shields.io/github/v/release/xjh22222228/nav" />
     <a href="https://github.com/xjh22222228/nav/stargazers"><img src="https://img.shields.io/github/stars/xjh22222228/nav" alt="Stars"/></a>
-    <img alt="Angular" src="https://img.shields.io/static/v1.svg?label=&message=Angular11&style=flat-square&color=C82B38">
+    <img alt="Angular" src="https://img.shields.io/static/v1.svg?label=&message=Angular&style=flat-square&color=C82B38">
     <img src="https://img.shields.io/github/license/xjh22222228/nav" />
   </p>
 </p>
 
-<br />
-<br />
+<picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcset="
+      https://api.star-history.com/svg?repos=xjh22222228/nav&type=Date&theme=dark
+    "
+  />
+  <source
+    media="(prefers-color-scheme: light)"
+    srcset="
+      https://api.star-history.com/svg?repos=xjh22222228/nav&type=Date
+    "
+  />
+  <img
+    alt="Star History Chart"
+    src="https://api.star-history.com/svg?repos=xjh22222228/nav&type=Date"
+  />
+</picture>
 
+## 特性
 
-## Preview
-**Themes**
+三不需：`无需数据库`、`无需服务器`、`无需成本`
 
-- [Sim online preview](https://nav3.cn/#/sim)
-- [Light online preview](https://nav3.cn/#/light)
-- [Side online preview](https://nav3.cn/#/side)
-- [App online preview](https://nav3.cn/#/app)
+`发现导航` 的理念就是做一款无需依赖后端服务既简单又方便，没有繁杂的配置和数据库等配置概念, 做到开箱即用。
 
-![Preview](https://raw.githubusercontent.com/xjh22222228/public/gh-pages/nav/1.png)
-![Preview](https://raw.githubusercontent.com/xjh22222228/public/gh-pages/nav/2.png)
-![Preview](https://raw.githubusercontent.com/xjh22222228/public/gh-pages/nav/3.png)
-![Preview](https://raw.githubusercontent.com/xjh22222228/public/gh-pages/nav/4.png)
-![Preview](https://raw.githubusercontent.com/xjh22222228/public/gh-pages/nav/5.png)
+- 🍰 内置 `800+` 优质网站
+- 🍰 支持 [码云 Gitee](https://gitee.com/xiejiahe/nav)
+- 🍰 支持从浏览器书签导入
+- 🍰 支持将数据导出到浏览器书签
+- 🍰 支持用户提交新增、编辑、删除
+- 🍰 支持自有部署(pm2|Docker|宝塔)/Fork
+- 🍰 丰富的资源配置系统
+- 🍰 支持 SEO 搜索引擎
+- 🍰 支持网站关联多个网址或标签
+- 🍰 支持检测网站存活状态
+- 🍰 支持配置仅自己可见
+- 🍰 自动抓取网站图标/名称/描述
+- 🍰 海量小组件个性化定制
+- 🍰 支持暗黑模式
+- 🍰 支持后台管理, 无需部署
+- 🍰 支持足迹记忆
+- 🍰 支持多种搜索查询
+- 🍰 支持自定义引擎搜索
+- 🍰 支持卡片广告展示
+- 🍰 多款高颜值主题切换
+- 🍰 强大的响应式系统
+- 🍰 多种 Loading 加载动画
+- 🍰 多种卡片风格设计
+- 🍰 完全纯静态, 提供自动化部署功能
+- 🍰 三叉树分类、结构清晰、分类清晰
 
+## 预览
 
+- [https://nav3.cn](https://nav3.cn)
 
+![Preview](https://gcore.jsdelivr.net/gh/xjh22222228/public@gh-pages/nav/preview.gif)
 
+## 可以干嘛
 
+- 部署公司内部导航系统，统一管理常用链接
+- 个人书签管理，替代浏览器收藏夹
+- 个人导航网站，分享、价值、发现
 
-## Features
-`Discovery Navigation The idea is to make it simple and convenient without relying on back-end services, without complicated configuration and database configuration concepts, so it can be used out of the box.
+## 部署
 
+零成本部署，像数 `321` 一样简单。
 
-- 🍰 Built-in 800+utility sites.
-- 🍰 Support SEO.
-- 🍰 It is completely static and provides automatic deployment functions.
-- 🍰 The trigeminal tree has a clear structure and clear classification.
-- 🍰 Support one website to associate multiple URLs
-- 🍰 The coexistence of beauty and simplicity is no longer the era of killing Matt.
-- 🍰 Completely open source, easy to customize.
-- 🍰 Support multiple browsing modes and innovation.
-- 🍰 Support footprint memory.
-- 🍰 Support mobile browsing.
-- 🍰 Support search query.
-- 🍰 Support custom engine search.
-- 🍰 A variety of theme switching.
-- 🍰 Support dark mode.
-- 🍰 Support background management, no need to deploy.
-- 🍰 Support import from Chrome bookmarks
+#### gh-pages (免费)
 
+1、右上角点击 `Fork` 当前项目。
 
-## Deploy
-Its as easy as counting numbers "3 2 1" that simple!
+2、[https://github.com/settings/tokens/new](https://github.com/settings/tokens/new) 申请 `token`, 勾选相应的权限, 如果不懂就全部选中，复制并保存 Token；[Gitee 申请点这里](https://gitee.com/profile/personal_access_tokens/new)
 
-#### Method one (github-pages free)
-1、Fork the current project.
+3、https://github.com/你的用户名/nav/settings/secrets/actions/new 添加申请的 token， name 填写 `TOKEN` 大写。
 
-2、Click on the `main` branch on the warehouse page and enter `image` in the input box to create a branch. Otherwise, uploading images will result in a 404 phenomenon.
+4、打开 https://github.com/你的用户名/nav/actions 开启 action 自动部署
 
-3、[https://github.com/settings/tokens](https://github.com/settings/tokens) apply for a token, check the corresponding permissions, if you don’t understand, select all, copy and save the token.
+5、修改项目根目录配置文件 [nav.config.yaml](nav.config.yaml) 只需要修改仓库地址 `gitRepoUrl` 字段
 
-4、https://github.com/username/nav/settings/secrets/actions/new  Create a new application token, name fill in TOKEN (All are uppercase).
+6、打开 https://你的用户名.github.io/nav 就能看到一个非常强大的导航网站了。
 
-5、Go to https://github.com/username/nav/actions click "Green Button"
+#### Netlify 推荐(免费)
 
-6、Be sure to modify the project configuration file [nav.config.ts](nav.config.ts)
+打包路径 `dist/browser`
 
-7、After 5 minutes, open https://username.github.io/nav , you will see a very powerful navigation website.
-
-### Method 2 (Free Vercel)
-The steps are the same as the first method, except that the fourth step is not needed.
-For specific use, follow the steps [https://github.com/apps/vercel](https://github.com/apps/vercel)
-
-
-### Method 3 (Free Netlify)
 [https://www.netlify.com/](https://www.netlify.com/)
 
+#### Vercel 推荐(免费)
 
+[https://github.com/apps/vercel](https://github.com/apps/vercel)
 
+## 配置说明
 
-## Backstage
-Modify the routing address to `system`, such as: https://www.nav3.cn/#/light Change to https://www.nav3.cn/#/system
+只需要修改根目录 `nav.config.yaml` 以下相关字段
+|Fork |自有部署 | 字段 | 说明 |
+| --------------------------------------------- | -------- |--- |--- |
+|√ | | gitRepoUrl | 填写您的仓库地址 |
+|√ | | branch | 部署分支 |
+|√ | √| hashMode | 路由是否 Hash 模式, 如果是部署在 `github pages` 务必设为 true |
+| | √| password | 自有部署登录密码，`Fork` 用户无需填写 |
+| | √| address | 自有部署, 一旦填写认为你是自有部署 |
+|√| √| email | 用户提交收录通知 |
+| | √| mailConfig | 自有部署，用户收录通知邮箱配置 |
+|√ | | imageRepoUrl | 图片仓库, 默认主仓库 `https://github.com/xjh22222228/image?branch=main` |
 
+## 后台
 
-## Bookmark import
+将路由地址修改为 `system` 即可进入，如: https://www.nav3.cn 修改为 https://www.nav3.cn/system
 
-Support importing from Chrome bookmarks (WebKit kernel should be supported~), it will automatically detect navigation that meets the three-level classification, and all others will be set as unclassified:
+## 升级
 
-![](https://raw.githubusercontent.com/xjh22222228/public/gh-pages/nav/import.png)
+#### 自动
 
-The browser opens chrome://bookmarks/ to export the bookmarks to get the html file, and then import it from the background of the navigation website.
+仅限于 `Fork` 用户
 
+[点这里安装 Pull](https://github.com/apps/pull) ， 只要有升级会自动给你的仓库提交 `Pull Requests` 点击合并即可。
 
+#### 手动
 
+将你的仓库克隆下来执行以下命令
 
-## Upgrade
-Before upgrading, please back up the `data` folder and `nav.config.ts` in the root directory, and replace them after the upgrade.
-Click the `Watch` button in the upper right corner to track the version upgrade for the first time.
+```bash
+git pull
+git remote add upstream https://gitee.com/xiejiahe/nav.git
+git fetch upstream main
+git merge upstream/main --allow-unrelated-histories --no-edit
+git push
 
-
-## Update log
-[CHANGELOG](https://github.com/xjh22222228/nav/releases)
-
-
-
-
-
-
-## Development and construction
-NODE: v18
-``` bash
-# Download
-git clone --depth=1 https://github.com/xjh22222228/nav.git
-
-cd nav
-
-# Installation dependencies(Node:v18)
-yarn
-
-# Start
-yarn start
-
-# Build
-yarn build
+# 如果安装了node只需执行
+npm run update
 ```
 
+## 支持
 
+项目于 2018 年到至今一直坚持维护和开源, 经过 N 次的迭代与优化, 如果项目能帮到您是我的荣幸。
 
-## contribute
-Thank you for your [contribution](https://github.com/xjh22222228/nav/issues), men.
+您可以请作者喝杯咖啡，继续战斗下去
 
-<a href="https://github.com/YutHelloWorld">
-  <img src="https://avatars1.githubusercontent.com/u/20860159?s=460&v=4" width="30px" height="30px" />
-</a>
-<a href="https://github.com/JJJTHuang">
-  <img src="https://avatars3.githubusercontent.com/u/22817432?s=460&v=4" width="30px" height="30px" />
-</a>
-<a href="https://github.com/Fechin">
-  <img src="https://avatars1.githubusercontent.com/u/2541482?s=460&v=4" width="30px" height="30px" />
-</a>
-<a href="https://github.com/setdiaoyong">
-  <img src="https://avatars1.githubusercontent.com/u/62551864?s=460&v=4" width="30px" height="30px" />
-</a>
-
-
-
-
-
-
-## Suggest
-If you have any functional suggestions, you can initiate an [issue](https://github.com/xjh22222228/nav/issues), Thank you.
+<img src="https://gcore.jsdelivr.net/gh/xjh22222228/public@gh-pages/img/32.png" width="600">
 
 ## LICENSE
-[MIT](./LICENSE)
+
+For commercial sites, themes, projects, and applications, keep your source code private/proprietary by purchasing a [Commercial License](https://official.nav3.cn/pricing).
+
+Licensed under the GNU General Public License 3.0 for compatible open source projects and non-commercial use.
+
+Copyright 2024-present xiejiahe

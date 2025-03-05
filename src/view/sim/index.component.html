@@ -1,0 +1,134 @@
+<div class="sim">
+  <nz-spin
+    nzSimple
+    *ngIf="commonService.sliceMax === 0"
+    class="position-center mt-2.5"
+  />
+
+  <div
+    class="wallpaper"
+    *ngIf="commonService.settings.simThemeImages.length > 0"
+    [class.bootstrap]="commonService.settings.simThemeHeight < 260"
+  >
+    <app-swiper
+      [images]="commonService.settings.simThemeImages"
+      [autoplay]="commonService.settings.simThemeAutoplay"
+      [height]="commonService.settings.simThemeHeight"
+    />
+    <div class="bar">
+      <h1 class="title dark-white">
+        {{ commonService.settings.simTitle || commonService.settings.title }}
+      </h1>
+      <pre
+        class="description dark-white"
+        [innerHTML]="description | safeHtml"
+      ></pre>
+    </div>
+  </div>
+
+  <div class="sim-component">
+    <component-group></component-group>
+  </div>
+
+  <app-search class="hidden search-sm" />
+
+  <nav class="top-nav dark-border-color dark-scrollbar dark-bg">
+    <span
+      *ngFor="
+        let item of commonService.websiteList.slice(0, commonService.overIndex);
+        let i = index;
+        trackBy: commonService.trackByItem
+      "
+      [class.active]="commonService.oneIndex === i"
+      [class.dark-text-active]="commonService.oneIndex === i"
+      class="over-item dark-text"
+      (click)="commonService.handleClickClass(item.id)"
+    >
+      {{ item.title }}
+    </span>
+    <!-- More -->
+    <app-web-more-menu
+      *ngIf="commonService.overIndex < commonService.websiteList.length"
+      [data]="commonService.websiteList.slice(commonService.overIndex, 99999)"
+      [index]="commonService.overIndex"
+      [page]="commonService.oneIndex"
+      (onClick)="commonService.handleClickClass($event)"
+    />
+  </nav>
+
+  <div class="wrapper">
+    <nav
+      class="sidebar dark-bg"
+      id="sidebar"
+      *ngIf="commonService.websiteList[commonService.oneIndex]?.nav?.length"
+    >
+      <div
+        *ngFor="
+          let item of commonService.websiteList[commonService.oneIndex].nav;
+          let i = index;
+          trackBy: commonService.trackByItem
+        "
+        (click)="commonService.handleClickClass(item.id)"
+        [class.active]="commonService.twoIndex === i"
+        [class.dark-item-active]="commonService.twoIndex === i"
+        class="ripple-btn dark-text dark-hover"
+      >
+        {{ item.title }}
+      </div>
+    </nav>
+
+    <aside class="site-box dark-bg">
+      <app-search class="max768none" />
+
+      <div *ngIf="commonService.currentList.length > 0; else noData">
+        <div
+          *ngFor="
+            let item of commonService.currentList.slice(
+              0,
+              commonService.sliceMax
+            );
+            let i = index;
+            trackBy: commonService.trackByItem
+          "
+        >
+          <div class="nav-wrapper">
+            <app-toolbar-title
+              [dataSource]="item"
+              (onCollapse)="commonService.onCollapse(item)"
+            />
+
+            <div
+              class="px-3 grid gap-x-4 gap-y-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              [class.hidden]="item['collapsed']"
+            >
+              <app-card
+                *ngFor="
+                  let el of item.nav;
+                  trackBy: commonService.trackByItemWeb
+                "
+                [cardStyle]="commonService.settings.simCardStyle"
+                [dataSource]="el"
+                class="column-border"
+              ></app-card>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noData>
+        <app-no-data></app-no-data>
+      </ng-template>
+    </aside>
+  </div>
+</div>
+
+<app-footer
+  className="sim-footer"
+  [content]="commonService.settings.simFooterHTML"
+/>
+<app-fixbar
+  (onCollapse)="commonService.onCollapseAll()"
+  [collapsed]="commonService.collapsed"
+/>
+
+<div class="sim-bg dark-bg"></div>
